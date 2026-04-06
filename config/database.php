@@ -1,20 +1,23 @@
 <?php
-// Database connection file
-// Using MySQLi to connect to our classsync database
+// Database Configuration
+$host = 'localhost';
+$username = 'root';
+$password = '';
+$database = 'classsync';
 
-$host = "localhost";
-$username = "root";
-$password = "";  // default XAMPP has no password
-$database = "classsync";
+// Create connection
+$conn = new mysqli($host, $username, $password, $database);
 
-// create connection
-$conn = mysqli_connect($host, $username, $password, $database);
-
-// check if connection worked
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
-// set charset to avoid encoding issues
-mysqli_set_charset($conn, "utf8");
+// Set charset
+$conn->set_charset("utf8mb4");
+
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 ?>
