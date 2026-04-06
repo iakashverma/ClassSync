@@ -49,6 +49,10 @@ $currentName = getUserName();
             <a href="/ClassSync/teacher/dashboard.php" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
             <a href="/ClassSync/teacher/create_assignment.php" class="nav-link"><i class="fas fa-plus-circle"></i> Create Assignment</a>
             <a href="/ClassSync/teacher/my_assignments.php" class="nav-link"><i class="fas fa-clipboard-list"></i> My Assignments</a>
+            <a href="/ClassSync/teacher/upload_material.php" class="nav-link"><i class="fas fa-file-upload"></i> Upload Material</a>
+            <a href="/ClassSync/teacher/manage_materials.php" class="nav-link"><i class="fas fa-book-open"></i> My Materials</a>
+            <a href="/ClassSync/teacher/add_video.php" class="nav-link"><i class="fas fa-video"></i> Add Video</a>
+            <a href="/ClassSync/teacher/manage_videos.php" class="nav-link"><i class="fas fa-play-circle"></i> My Videos</a>
         <?php elseif ($currentRole == 'student'): ?>
             <a href="/ClassSync/student/dashboard.php" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
             <a href="/ClassSync/student/view_assignments.php" class="nav-link"><i class="fas fa-clipboard-list"></i> Assignments</a>
