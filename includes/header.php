@@ -13,6 +13,9 @@ $current_page = basename($_SERVER['PHP_SELF'], '.php');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Class Sync - Digitize Your Classroom Experience. Track daily class work, attendance, and assignments in one place.">
     <title><?php echo isset($page_title) ? $page_title . ' - Class Sync' : 'Class Sync'; ?></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/ClassSync/assets/css/style.css">
     <?php if (isset($extra_css)): ?>
         <?php foreach ($extra_css as $css): ?>
