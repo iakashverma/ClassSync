@@ -1,12 +1,6 @@
-    </main>
+    </div><!-- end content-wrapper -->
+</div><!-- end main-content -->
 
-    <footer class="footer">
-        <div class="footer-content">
-            <p>⚡ <strong>ClassSync</strong> – Smart Classwork & Assignment Tracking System</p>
-            <p class="footer-sub">Built with 💜 for seamless academic management</p>
-        </div>
-    </footer>
-
-    <script src="<?php echo BASE_URL; ?>/assets/js/app.js"></script>
+<script src="/ClassSync/assets/js/script.js"></script>
 </body>
 </html>

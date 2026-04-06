@@ -1,15 +1,23 @@
 <?php
-/**
- * ClassSync - Entry Point
- * Redirects to appropriate dashboard based on role, or to login
- */
-require_once __DIR__ . '/config/database.php';
-require_once __DIR__ . '/includes/auth.php';
+// index.php - Entry point
+// redirects to login or dashboard based on session
+require_once 'includes/auth.php';
 
 if (isLoggedIn()) {
-    $role = $_SESSION['user_role'];
-    header('Location: ' . getRoleDashboard($role));
+    $role = getUserRole();
+    
+    // send user to their dashboard
+    if ($role == 'admin') {
+        header("Location: admin/dashboard.php");
+    } elseif ($role == 'teacher') {
+        header("Location: teacher/dashboard.php");
+    } elseif ($role == 'student') {
+        header("Location: student/dashboard.php");
+    }
+    exit();
 } else {
-    header('Location: ' . BASE_URL . '/pages/auth/login.php');
+    // not logged in, go to login
+    header("Location: login.php");
+    exit();
 }
-exit;
+?>
