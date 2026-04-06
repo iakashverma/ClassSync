@@ -48,6 +48,36 @@ CREATE TABLE IF NOT EXISTS submissions (
     FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+-- Study Materials table (PDF/DOC uploaded by teachers, visible on homepage)
+CREATE TABLE IF NOT EXISTS study_materials (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    teacher_id INT NOT NULL,
+    subject_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    file_path VARCHAR(255) NOT NULL,
+    file_type VARCHAR(10) NOT NULL,
+    is_public TINYINT(1) DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- Video Lectures table (YouTube/external links added by teachers)
+CREATE TABLE IF NOT EXISTS video_lectures (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    teacher_id INT NOT NULL,
+    subject_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    video_url VARCHAR(500) NOT NULL,
+    thumbnail_url VARCHAR(500),
+    is_public TINYINT(1) DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 -- ========================
 -- Default Users (pre-seeded)
 -- ========================
