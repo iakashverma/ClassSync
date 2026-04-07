@@ -15,9 +15,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
         $role = $_POST['role'];
         $reg_no = trim($_POST['registration_number']) ?: null;
+        
+        if ($role === 'student') {
+            $course_id = $_POST['course_id'] ?? null;
+            $year = $_POST['year'] ?? null;
+            $section_id = $_POST['section_id'] ?? null;
+            
+            $stmt = $conn->prepare("INSERT INTO users (name, email, password, role, registration_number, course_id, year, section_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssssisi", $name, $email, $password, $role, $reg_no, $course_id, $year, $section_id);
+        } else {
+            $department = $_POST['department'] ?? null;
+            $subject_id = $_POST['subject_id'] ?? null;
+            
+            $stmt = $conn->prepare("INSERT INTO users (name, email, password, role, registration_number, department, subject_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssssi", $name, $email, $password, $role, $reg_no, $department, $subject_id);
+        }
 
-        $stmt = $conn->prepare("INSERT INTO users (name, email, password, role, registration_number) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssss", $name, $email, $password, $role, $reg_no);
         $stmt->execute();
         $stmt->close();
         header("Location: /ClassSync/admin/manage_users.php?success=added");
@@ -35,11 +48,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     }
 }
 
+// Fetch Courses
+$courses_result = $conn->query("SELECT * FROM courses");
+$courses = [];
+while ($row = $courses_result->fetch_assoc()) { $courses[] = $row; }
+
+// Fetch Sections
+$sections_result = $conn->query("SELECT * FROM sections");
+$sections = [];
+while ($row = $sections_result->fetch_assoc()) { $sections[] = $row; }
+
+// Fetch Subjects
+$subjects_result = $conn->query("SELECT * FROM subjects");
+$subjects = [];
+while ($row = $subjects_result->fetch_assoc()) { $subjects[] = $row; }
+
 // Get users
 $filter_role = $_GET['role'] ?? '';
 $search = $_GET['search'] ?? '';
 
-$query = "SELECT * FROM users WHERE 1=1";
+$query = "
+    SELECT u.*, c.course_name, sec.section_name, sub.subject_name 
+    FROM users u 
+    LEFT JOIN courses c ON u.course_id = c.course_id 
+    LEFT JOIN sections sec ON u.section_id = sec.section_id 
+    LEFT JOIN subjects sub ON u.subject_id = sub.subject_id 
+    WHERE 1=1
+";
 $params = [];
 $types = "";
 
@@ -114,16 +149,74 @@ $users = $stmt->get_result();
                         </div>
                         <div class="form-group">
                             <label>Role</label>
-                            <select name="role" required>
+                            <select name="role" id="role-selector" onchange="toggleRoleFields()" required>
                                 <option value="teacher">Teacher</option>
                                 <option value="student">Student</option>
+                                <option value="admin">Admin</option>
                             </select>
                         </div>
                     </div>
+                    
                     <div class="form-group">
                         <label>Registration Number</label>
                         <input type="text" name="registration_number" placeholder="6 digits for teacher, 8 for student">
                     </div>
+
+                    <!-- Teacher Fields -->
+                    <div id="teacher-fields" style="background:#f8fafc;padding:15px;border-radius:8px;margin-bottom:15px;border-left:4px solid #3b82f6;">
+                        <h4 style="margin:0 0 10px 0;color:#1e293b;">👨‍🏫 Teacher Academic Details</h4>
+                        <div class="form-row">
+                            <div class="form-group" style="margin:0;">
+                                <label>Department</label>
+                                <input type="text" name="department" placeholder="e.g. CS, IT">
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label>Subject (Primary)</label>
+                                <select name="subject_id">
+                                    <option value="">Select Target Subject</option>
+                                    <?php foreach($subjects as $subject): ?>
+                                        <option value="<?= $subject['subject_id'] ?>"><?= htmlspecialchars($subject['subject_name']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Student Fields -->
+                    <div id="student-fields" style="display:none;background:#f0fdf4;padding:15px;border-radius:8px;margin-bottom:15px;border-left:4px solid #22c55e;">
+                        <h4 style="margin:0 0 10px 0;color:#166534;">👨‍🎓 Student Academic Details</h4>
+                        <div class="form-row">
+                            <div class="form-group" style="margin:0;">
+                                <label>Course</label>
+                                <select id="student-course" name="course_id" onchange="filterSections()">
+                                    <option value="">Select Target Course</option>
+                                    <?php foreach($courses as $course): ?>
+                                        <option value="<?= $course['course_id'] ?>"><?= htmlspecialchars($course['course_name']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label>Year</label>
+                                <select id="student-year" name="year" onchange="filterSections()">
+                                    <option value="">Select Target Year</option>
+                                    <option value="1st">1st Year</option>
+                                    <option value="2nd">2nd Year</option>
+                                    <option value="3rd">3rd Year</option>
+                                    <option value="4th">4th Year</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top:15px;">
+                            <label>Section</label>
+                            <select id="student-section" name="section_id">
+                                <option value="">Select Target Section</option>
+                                <?php foreach($sections as $section): ?>
+                                    <option value="<?= $section['section_id'] ?>" data-course="<?= $section['course_id'] ?>" data-year="<?= $section['year'] ?>"><?= htmlspecialchars($section['section_name']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="form-actions">
                         <button type="submit" class="btn btn-blue">Add User</button>
                     </div>
@@ -152,7 +245,7 @@ $users = $stmt->get_result();
                                 <th>ID</th>
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>Role</th>
+                                <th>Roles & Details</th>
                                 <th>Reg No.</th>
                                 <th>Joined</th>
                                 <th>Actions</th>
@@ -164,7 +257,14 @@ $users = $stmt->get_result();
                                 <td><?php echo $u['id']; ?></td>
                                 <td><?php echo htmlspecialchars($u['name']); ?></td>
                                 <td><?php echo htmlspecialchars($u['email']); ?></td>
-                                <td><span class="badge badge-info"><?php echo ucfirst($u['role']); ?></span></td>
+                                <td>
+                                    <span class="badge badge-info"><?php echo ucfirst($u['role']); ?></span>
+                                    <?php if ($u['role'] === 'student'): ?>
+                                        <div style="font-size:12px;color:#64748b;margin-top:4px;"><?php echo htmlspecialchars($u['course_name'] ?? '-'); ?> • Sec <?php echo htmlspecialchars($u['section_name'] ?? '-'); ?></div>
+                                    <?php elseif ($u['role'] === 'teacher'): ?>
+                                        <div style="font-size:12px;color:#64748b;margin-top:4px;"><?php echo htmlspecialchars($u['department'] ?? '-'); ?> • <?php echo htmlspecialchars($u['subject_name'] ?? '-'); ?></div>
+                                    <?php endif; ?>
+                                </td>
                                 <td><?php echo $u['registration_number'] ?? '-'; ?></td>
                                 <td><?php echo date('M d, Y', strtotime($u['created_at'])); ?></td>
                                 <td>
@@ -188,5 +288,35 @@ $users = $stmt->get_result();
     </div>
 
     <script src="/ClassSync/assets/js/main.js"></script>
+    <script>
+        function toggleRoleFields() {
+            var role = document.getElementById('role-selector').value;
+            document.getElementById('teacher-fields').style.display = (role === 'teacher') ? 'block' : 'none';
+            document.getElementById('student-fields').style.display = (role === 'student') ? 'block' : 'none';
+        }
+        
+        function filterSections() {
+            var courseId = document.getElementById('student-course').value;
+            var year = document.getElementById('student-year').value;
+            var sectionSelect = document.getElementById('student-section');
+            var options = sectionSelect.getElementsByTagName('option');
+            
+            sectionSelect.value = ""; // Reset selected
+            for(var i = 1; i < options.length; i++) {
+                var optCourse = options[i].getAttribute('data-course');
+                var optYear = options[i].getAttribute('data-year');
+                
+                if (courseId && year) {
+                    if (optCourse == courseId && optYear == year) {
+                        options[i].style.display = '';
+                    } else {
+                        options[i].style.display = 'none';
+                    }
+                } else {
+                    options[i].style.display = '';
+                }
+            }
+        }
+    </script>
 </body>
 </html>

@@ -7,7 +7,13 @@ checkRole('admin');
 $active_page = 'reports';
 
 // Get all reports with teacher name
-$reports = $conn->query("SELECT r.*, u.name as teacher_name FROM reports r JOIN users u ON r.teacher_id = u.id ORDER BY r.date DESC");
+$reports = $conn->query("
+    SELECT r.*, u.name as teacher_name, s.subject_name 
+    FROM reports r 
+    JOIN users u ON r.teacher_id = u.id 
+    JOIN subjects s ON r.subject_id = s.subject_id 
+    ORDER BY r.date DESC
+");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -53,7 +59,7 @@ $reports = $conn->query("SELECT r.*, u.name as teacher_name FROM reports r JOIN 
                             <?php while ($r = $reports->fetch_assoc()): ?>
                             <tr>
                                 <td><?php echo date('M d, Y', strtotime($r['date'])); ?></td>
-                                <td><strong><?php echo htmlspecialchars($r['subject']); ?></strong></td>
+                                <td><strong><?php echo htmlspecialchars($r['subject_name']); ?></strong></td>
                                 <td><?php echo htmlspecialchars($r['topic']); ?></td>
                                 <td><?php echo htmlspecialchars(substr($r['description'], 0, 80)) . (strlen($r['description']) > 80 ? '...' : ''); ?></td>
                                 <td><?php echo htmlspecialchars(substr($r['homework'], 0, 60)) . (strlen($r['homework']) > 60 ? '...' : ''); ?></td>

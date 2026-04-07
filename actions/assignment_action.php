@@ -24,18 +24,28 @@ if ($action === 'create_assignment') {
     $title = trim($_POST['title'] ?? '');
     $description = trim($_POST['description'] ?? '');
     $deadline = $_POST['deadline'] ?? '';
+    
+    // Fetch target class mapping from DB
+    $class_assignment_id = intval($_POST['class_assignment_id'] ?? 0);
+    $ca_query = $conn->query("SELECT course_id, year, section_id, subject_id FROM class_assignments WHERE id = $class_assignment_id");
+    $class_data = $ca_query->fetch_assoc();
+    
+    $subject_id = $class_data['subject_id'] ?? 0;
+    $course_id = $class_data['course_id'] ?? 0;
+    $year = $class_data['year'] ?? '';
+    $section_id = $class_data['section_id'] ?? 0;
 
-    if (empty($title) || empty($deadline)) {
+    if (empty($title) || empty($deadline) || empty($subject_id)) {
         header("Location: /ClassSync/teacher/assignments.php?error=required");
         exit();
     }
 
-    $stmt = $conn->prepare("INSERT INTO assignments (title, description, deadline, teacher_id) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("sssi", $title, $description, $deadline, $user_id);
+    $stmt = $conn->prepare("INSERT INTO assignments (title, description, deadline, teacher_id, subject_id, course_id, year, section_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssiissi", $title, $description, $deadline, $user_id, $subject_id, $course_id, $year, $section_id);
 
     if ($stmt->execute()) {
-        // Create notification for all students
-        $students = $conn->query("SELECT id FROM users WHERE role = 'student'");
+        // Create notification for targeted students only
+        $students = $conn->query("SELECT id FROM users WHERE role = 'student' AND course_id = '$course_id' AND year = '$year' AND section_id = '$section_id'");
         while ($student = $students->fetch_assoc()) {
             $msg = "New assignment: $title (Deadline: $deadline)";
             $notif = $conn->prepare("INSERT INTO notifications (user_id, message, type) VALUES (?, ?, 'assignment')");

@@ -7,12 +7,25 @@ checkRole('teacher');
 $active_page = 'assignments';
 $user_id = $_SESSION['user_id'];
 
+// Get assigned classes mapped
+$assigned_classes = $conn->query("
+    SELECT ca.id as class_assignment_id, c.course_id, c.course_name, sec.section_id, sec.year, sec.section_name, sub.subject_id, sub.subject_name 
+    FROM class_assignments ca
+    JOIN courses c ON ca.course_id = c.course_id
+    JOIN sections sec ON ca.section_id = sec.section_id
+    JOIN subjects sub ON ca.subject_id = sub.subject_id
+    WHERE ca.teacher_id = $user_id
+");
+
 // Get my assignments with submission count
 $assignments = $conn->query("
-    SELECT a.*,
-        (SELECT COUNT(*) FROM submissions s WHERE s.assignment_id = a.id) as submission_count,
-        (SELECT COUNT(*) FROM users WHERE role='student') as total_students
+    SELECT a.*, c.course_name, sec.section_name, s.subject_name,
+        (SELECT COUNT(*) FROM submissions sub WHERE sub.assignment_id = a.id) as submission_count,
+        (SELECT COUNT(*) FROM users u WHERE u.role='student' AND u.course_id=a.course_id AND u.year=a.year AND u.section_id=a.section_id) as total_students
     FROM assignments a
+    JOIN courses c ON a.course_id = c.course_id
+    JOIN sections sec ON a.section_id = sec.section_id
+    JOIN subjects s ON a.subject_id = s.subject_id
     WHERE a.teacher_id = $user_id
     ORDER BY a.deadline DESC
 ");
@@ -58,6 +71,18 @@ $assignments = $conn->query("
                         <label>Title</label>
                         <input type="text" name="title" placeholder="Assignment title" required>
                     </div>
+                    
+                    <div class="form-group">
+                        <label>Target Class & Subject</label>
+                        <select name="class_assignment_id" required>
+                            <option value="">Select Target Audience...</option>
+                            <?php while ($cls = $assigned_classes->fetch_assoc()): ?>
+                                <option value="<?php echo $cls['class_assignment_id']; ?>">
+                                    <?php echo htmlspecialchars($cls['course_name'] . ' - ' . $cls['year'] . ' Year (Sec ' . $cls['section_name'] . ') • ' . $cls['subject_name']); ?>
+                                </option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
 
                     <div class="form-group">
                         <label>Description</label>
@@ -93,7 +118,10 @@ $assignments = $conn->query("
                         <tbody>
                             <?php while ($a = $assignments->fetch_assoc()): ?>
                             <tr>
-                                <td><strong><?php echo htmlspecialchars($a['title']); ?></strong></td>
+                                <td>
+                                    <strong><?php echo htmlspecialchars($a['title']); ?></strong><br>
+                                    <span style="font-size:12px;color:#64748b;"><?php echo htmlspecialchars($a['course_name'].' - Sec '.$a['section_name'].' • '.$a['subject_name']); ?></span>
+                                </td>
                                 <td><?php echo htmlspecialchars(substr($a['description'], 0, 60)) . (strlen($a['description']) > 60 ? '...' : ''); ?></td>
                                 <td>
                                     <?php echo date('M d, Y', strtotime($a['deadline'])); ?>

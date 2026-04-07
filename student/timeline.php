@@ -7,19 +7,37 @@ checkRole('student');
 $active_page = 'timeline';
 $user_id = $_SESSION['user_id'];
 
-// Filter by subject
-$filter_subject = $_GET['subject'] ?? '';
+// Get student class details
+$user_info = $conn->query("SELECT course_id, year, section_id FROM users WHERE id = $user_id")->fetch_assoc();
+$course_id = $user_info['course_id'] ?? 0;
+$year = $user_info['year'] ?? '';
+$section_id = $user_info['section_id'] ?? 0;
 
-$query = "SELECT r.*, u.name as teacher_name FROM reports r JOIN users u ON r.teacher_id = u.id";
-if ($filter_subject) {
-    $query .= " WHERE r.subject = '" . $conn->real_escape_string($filter_subject) . "'";
+// Filter by subject
+$filter_subject_id = $_GET['subject_id'] ?? '';
+
+$query = "
+    SELECT r.*, u.name as teacher_name, s.subject_name 
+    FROM reports r 
+    JOIN users u ON r.teacher_id = u.id 
+    JOIN subjects s ON r.subject_id = s.subject_id
+    WHERE r.course_id = '$course_id' AND r.year = '$year' AND r.section_id = '$section_id'
+";
+if ($filter_subject_id) {
+    $query .= " AND r.subject_id = " . intval($filter_subject_id);
 }
 $query .= " ORDER BY r.date DESC";
 
 $reports = $conn->query($query);
 
 // Get unique subjects
-$subjects = $conn->query("SELECT DISTINCT subject FROM reports ORDER BY subject ASC");
+$subjects = $conn->query("
+    SELECT DISTINCT s.subject_id, s.subject_name 
+    FROM reports r 
+    JOIN subjects s ON r.subject_id = s.subject_id 
+    WHERE r.course_id = '$course_id' AND r.year = '$year' AND r.section_id = '$section_id'
+    ORDER BY s.subject_name ASC
+");
 
 // Group reports by date
 $grouped = [];
@@ -61,11 +79,11 @@ while ($a = $att_q->fetch_assoc()) {
 
             <!-- Filter -->
             <form method="GET" class="filter-bar">
-                <select name="subject">
+                <select name="subject_id">
                     <option value="">All Subjects</option>
                     <?php while ($s = $subjects->fetch_assoc()): ?>
-                        <option value="<?php echo htmlspecialchars($s['subject']); ?>" <?php echo $filter_subject === $s['subject'] ? 'selected' : ''; ?>>
-                            <?php echo htmlspecialchars($s['subject']); ?>
+                        <option value="<?php echo $s['subject_id']; ?>" <?php echo $filter_subject_id == $s['subject_id'] ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($s['subject_name']); ?>
                         </option>
                     <?php endwhile; ?>
                 </select>
@@ -93,7 +111,7 @@ while ($a = $att_q->fetch_assoc()) {
 
                         <?php foreach ($day_reports as $r): ?>
                         <div style="padding:8px 0;<?php echo count($day_reports) > 1 ? 'border-bottom:1px solid #f1f5f9;' : ''; ?>">
-                            <div class="timeline-subject"><?php echo htmlspecialchars($r['subject']); ?></div>
+                            <div class="timeline-subject"><?php echo htmlspecialchars($r['subject_name']); ?></div>
                             <div class="timeline-topic"><?php echo htmlspecialchars($r['topic']); ?></div>
                             <?php if (!empty($r['description'])): ?>
                                 <p style="font-size:13px;color:#555;margin-top:5px;"><?php echo htmlspecialchars(substr($r['description'], 0, 150)); ?></p>

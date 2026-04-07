@@ -3,6 +3,30 @@ $page_title = 'Register';
 $extra_css = ['auth.css'];
 include 'includes/auth_check.php';
 redirectIfLoggedIn();
+
+require_once 'config/database.php';
+
+// Fetch Courses
+$courses_result = $conn->query("SELECT * FROM courses");
+$courses = [];
+while ($row = $courses_result->fetch_assoc()) {
+    $courses[] = $row;
+}
+
+// Fetch Sections
+$sections_result = $conn->query("SELECT * FROM sections");
+$sections = [];
+while ($row = $sections_result->fetch_assoc()) {
+    $sections[] = $row;
+}
+
+// Fetch Subjects
+$subjects_result = $conn->query("SELECT * FROM subjects");
+$subjects = [];
+while ($row = $subjects_result->fetch_assoc()) {
+    $subjects[] = $row;
+}
+
 include 'includes/header.php';
 ?>
 
@@ -60,6 +84,21 @@ include 'includes/header.php';
                 </div>
 
                 <div class="form-group">
+                    <label for="teacher-department">Department</label>
+                    <input type="text" id="teacher-department" name="department" placeholder="e.g. CS, IT" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="teacher-subject">Subject (Primary)</label>
+                    <select id="teacher-subject" name="subject_id" required>
+                        <option value="">Select Primary Subject</option>
+                        <?php foreach($subjects as $subject): ?>
+                            <option value="<?= $subject['subject_id'] ?>"><?= htmlspecialchars($subject['subject_name']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="form-group">
                     <label for="teacher-password">Password</label>
                     <div class="password-wrapper">
                         <input type="password" id="teacher-password" name="password" placeholder="Create a password" minlength="6" required>
@@ -92,6 +131,37 @@ include 'includes/header.php';
                 </div>
 
                 <div class="form-group">
+                    <label for="student-course">Course</label>
+                    <select id="student-course" name="course_id" required onchange="filterSections()">
+                        <option value="">Select Course</option>
+                        <?php foreach($courses as $course): ?>
+                            <option value="<?= $course['course_id'] ?>"><?= htmlspecialchars($course['course_name']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="student-year">Year</label>
+                    <select id="student-year" name="year" required onchange="filterSections()">
+                        <option value="">Select Year</option>
+                        <option value="1st">1st Year</option>
+                        <option value="2nd">2nd Year</option>
+                        <option value="3rd">3rd Year</option>
+                        <option value="4th">4th Year</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="student-section">Section</label>
+                    <select id="student-section" name="section_id" required>
+                        <option value="">Select Section</option>
+                        <?php foreach($sections as $section): ?>
+                            <option value="<?= $section['section_id'] ?>" data-course="<?= $section['course_id'] ?>" data-year="<?= $section['year'] ?>"><?= htmlspecialchars($section['section_name']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="form-group">
                     <label for="student-password">Password</label>
                     <div class="password-wrapper">
                         <input type="password" id="student-password" name="password" placeholder="Create a password" minlength="6" required>
@@ -107,5 +177,31 @@ include 'includes/header.php';
             </div>
         </div>
     </div>
+
+    <script>
+        function filterSections() {
+            var courseId = document.getElementById('student-course').value;
+            var year = document.getElementById('student-year').value;
+            var sectionSelect = document.getElementById('student-section');
+            var options = sectionSelect.getElementsByTagName('option');
+            
+            sectionSelect.value = ""; // Reset selected
+
+            for(var i = 1; i < options.length; i++) { // Skip the first "Select Section" option
+                var optCourse = options[i].getAttribute('data-course');
+                var optYear = options[i].getAttribute('data-year');
+                
+                if (courseId && year) {
+                    if (optCourse == courseId && optYear == year) {
+                        options[i].style.display = '';
+                    } else {
+                        options[i].style.display = 'none';
+                    }
+                } else {
+                    options[i].style.display = ''; // Show all if course/year not fully selected
+                }
+            }
+        }
+    </script>
 
 <?php include 'includes/footer.php'; ?>

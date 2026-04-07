@@ -2,7 +2,18 @@
 // Dashboard Sidebar Include
 // Usage: Set $sidebar_role and $active_page before including this file
 $user = getCurrentUser();
-$sidebar_role = $sidebar_role ?? $user['role'];
+$current_path = $_SERVER['REQUEST_URI'] ?? '';
+
+if (strpos($current_path, '/teacher/') !== false) {
+    $sidebar_role = 'teacher';
+} elseif (strpos($current_path, '/student/') !== false) {
+    $sidebar_role = 'student';
+} elseif (strpos($current_path, '/admin/') !== false) {
+    $sidebar_role = 'admin';
+} else {
+    $sidebar_role = $user['role'];
+}
+
 $active_page = $active_page ?? 'dashboard';
 
 // Get unread notifications count
@@ -46,6 +57,14 @@ if (isset($conn) && $user['id']) {
                 <a href="/ClassSync/admin/manage_assignments.php" class="<?php echo $active_page === 'assignments' ? 'active' : ''; ?>">
                     <span class="nav-icon">📝</span> Assignments
                 </a>
+                
+                <div class="nav-section-title" style="margin-top:20px;">Quick Access</div>
+                <a href="/ClassSync/teacher/index.php">
+                    <span class="nav-icon">👨‍🏫</span> View as Teacher
+                </a>
+                <a href="/ClassSync/student/index.php">
+                    <span class="nav-icon">👨‍🎓</span> View as Student
+                </a>
 
             <?php elseif ($sidebar_role === 'teacher'): ?>
                 <a href="/ClassSync/teacher/" class="<?php echo $active_page === 'dashboard' ? 'active' : ''; ?>">
@@ -78,6 +97,14 @@ if (isset($conn) && $user['id']) {
                     <span class="nav-icon">📅</span> Timeline
                 </a>
             <?php endif; ?>
+
+            <?php if ($user['role'] === 'admin' && $sidebar_role !== 'admin'): ?>
+                <div class="nav-section-title" style="margin-top:20px;">Admin Controls</div>
+                <a href="/ClassSync/admin/">
+                    <span class="nav-icon">⬅️</span> Back to Admin
+                </a>
+            <?php endif; ?>
+
         </div>
     </nav>
 

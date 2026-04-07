@@ -18,8 +18,25 @@ if (isset($_GET['edit'])) {
     $stmt->close();
 }
 
+// Get assigned classes mapped
+$assigned_classes = $conn->query("
+    SELECT ca.id as class_assignment_id, c.course_id, c.course_name, sec.section_id, sec.year, sec.section_name, sub.subject_id, sub.subject_name 
+    FROM class_assignments ca
+    JOIN courses c ON ca.course_id = c.course_id
+    JOIN sections sec ON ca.section_id = sec.section_id
+    JOIN subjects sub ON ca.subject_id = sub.subject_id
+    WHERE ca.teacher_id = $user_id
+");
+
 // Get all reports by this teacher
-$reports = $conn->query("SELECT * FROM reports WHERE teacher_id = $user_id ORDER BY date DESC");
+$reports = $conn->query("
+    SELECT r.*, c.course_name, sec.year as sec_year, sec.section_name, s.subject_name 
+    FROM reports r 
+    JOIN courses c ON r.course_id = c.course_id
+    JOIN sections sec ON r.section_id = sec.section_id
+    JOIN subjects s ON r.subject_id = s.subject_id
+    WHERE r.teacher_id = $user_id ORDER BY r.date DESC
+");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -62,9 +79,17 @@ $reports = $conn->query("SELECT * FROM reports WHERE teacher_id = $user_id ORDER
                     <?php endif; ?>
 
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Subject</label>
-                            <input type="text" name="subject" placeholder="e.g. Database Management" value="<?php echo $edit_report ? htmlspecialchars($edit_report['subject']) : ''; ?>" required>
+                        <div class="form-group" style="flex: 2;">
+                            <label>Target Class & Subject</label>
+                            <select name="class_assignment_id" required>
+                                <option value="">Select Target Audience...</option>
+                                <?php while ($cls = $assigned_classes->fetch_assoc()): ?>
+                                    <option value="<?php echo $cls['class_assignment_id']; ?>"
+                                    <?php echo ($edit_report && $edit_report['subject_id'] == $cls['subject_id'] && $edit_report['course_id'] == $cls['course_id'] && $edit_report['section_id'] == $cls['section_id']) ? 'selected' : ''; ?>>
+                                        <?php echo htmlspecialchars($cls['course_name'] . ' - ' . $cls['year'] . ' Year (Sec ' . $cls['section_name'] . ') • ' . $cls['subject_name']); ?>
+                                    </option>
+                                <?php endwhile; ?>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Topic</label>
@@ -115,7 +140,10 @@ $reports = $conn->query("SELECT * FROM reports WHERE teacher_id = $user_id ORDER
                             <?php while ($r = $reports->fetch_assoc()): ?>
                             <tr>
                                 <td><?php echo date('M d, Y', strtotime($r['date'])); ?></td>
-                                <td><strong><?php echo htmlspecialchars($r['subject']); ?></strong></td>
+                                <td>
+                                    <strong><?php echo htmlspecialchars($r['subject_name']); ?></strong><br>
+                                    <span style="font-size:12px;color:#64748b;"><?php echo htmlspecialchars($r['course_name'].' - Sec '.$r['section_name']); ?></span>
+                                </td>
                                 <td><?php echo htmlspecialchars($r['topic']); ?></td>
                                 <td><?php echo htmlspecialchars(substr($r['homework'], 0, 50)) . (strlen($r['homework']) > 50 ? '...' : ''); ?></td>
                                 <td>

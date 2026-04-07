@@ -23,9 +23,16 @@ if ($action === 'mark_attendance') {
 
     $date = $_POST['date'] ?? date('Y-m-d');
     $attendance = $_POST['attendance'] ?? [];
+    
+    $course_id = intval($_POST['course_id'] ?? 0);
+    $year = $_POST['year'] ?? '';
+    $section_id = intval($_POST['section_id'] ?? 0);
 
-    // Get all students
-    $students = $conn->query("SELECT id FROM users WHERE role = 'student'");
+    // Get strictly students mapped to this specific class
+    $stmt_students = $conn->prepare("SELECT id FROM users WHERE role = 'student' AND course_id = ? AND year = ? AND section_id = ?");
+    $stmt_students->bind_param("isi", $course_id, $year, $section_id);
+    $stmt_students->execute();
+    $students = $stmt_students->get_result();
 
     while ($student = $students->fetch_assoc()) {
         $student_id = $student['id'];

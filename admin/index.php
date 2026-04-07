@@ -14,7 +14,13 @@ $total_reports = $conn->query("SELECT COUNT(*) as cnt FROM reports")->fetch_asso
 $total_assignments = $conn->query("SELECT COUNT(*) as cnt FROM assignments")->fetch_assoc()['cnt'];
 
 // Recent reports
-$recent_reports = $conn->query("SELECT r.*, u.name as teacher_name FROM reports r JOIN users u ON r.teacher_id = u.id ORDER BY r.created_at DESC LIMIT 5");
+$recent_reports = $conn->query("
+    SELECT r.*, u.name as teacher_name, s.subject_name 
+    FROM reports r 
+    JOIN users u ON r.teacher_id = u.id 
+    JOIN subjects s ON r.subject_id = s.subject_id 
+    ORDER BY r.created_at DESC LIMIT 5
+");
 
 // Recent users
 $recent_users = $conn->query("SELECT * FROM users ORDER BY created_at DESC LIMIT 5");
@@ -38,7 +44,9 @@ $recent_users = $conn->query("SELECT * FROM users ORDER BY created_at DESC LIMIT
                     <button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('active')">☰</button>
                     <h1>Admin Dashboard</h1>
                 </div>
-                <span class="breadcrumb">Welcome, <?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
+                <div style="display:flex; gap:15px; align-items:center;">
+                    <span class="breadcrumb">Welcome, <?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
+                </div>
             </div>
 
             <!-- Stats -->
@@ -83,7 +91,7 @@ $recent_users = $conn->query("SELECT * FROM users ORDER BY created_at DESC LIMIT
                             <?php while ($report = $recent_reports->fetch_assoc()): ?>
                             <tr>
                                 <td><?php echo date('M d, Y', strtotime($report['date'])); ?></td>
-                                <td><?php echo htmlspecialchars($report['subject']); ?></td>
+                                <td><?php echo htmlspecialchars($report['subject_name']); ?></td>
                                 <td><?php echo htmlspecialchars($report['topic']); ?></td>
                                 <td><?php echo htmlspecialchars($report['teacher_name']); ?></td>
                             </tr>

@@ -7,17 +7,26 @@ checkRole('student');
 $active_page = 'reports';
 $user_id = $_SESSION['user_id'];
 
+// Get student class details
+$user_info = $conn->query("SELECT course_id, year, section_id FROM users WHERE id = $user_id")->fetch_assoc();
+$course_id = $user_info['course_id'] ?? 0;
+$year = $user_info['year'] ?? '';
+$section_id = $user_info['section_id'] ?? 0;
+
 // Filters
 $filter_subject = $_GET['subject'] ?? '';
 $filter_date = $_GET['date'] ?? '';
 $search = $_GET['search'] ?? '';
 
-$query = "SELECT r.*, u.name as teacher_name FROM reports r JOIN users u ON r.teacher_id = u.id WHERE 1=1";
-$params = [];
-$types = "";
+$query = "SELECT r.*, u.name as teacher_name, s.subject_name FROM reports r 
+          JOIN users u ON r.teacher_id = u.id 
+          JOIN subjects s ON r.subject_id = s.subject_id 
+          WHERE r.course_id = ? AND r.year = ? AND r.section_id = ?";
+$params = [$course_id, $year, $section_id];
+$types = "isi";
 
 if ($filter_subject) {
-    $query .= " AND r.subject = ?";
+    $query .= " AND s.subject_name = ?";
     $params[] = $filter_subject;
     $types .= "s";
 }
@@ -28,7 +37,7 @@ if ($filter_date) {
 }
 if ($search) {
     $search_param = "%$search%";
-    $query .= " AND (r.subject LIKE ? OR r.topic LIKE ? OR r.description LIKE ?)";
+    $query .= " AND (s.subject_name LIKE ? OR r.topic LIKE ? OR r.description LIKE ?)";
     $params[] = $search_param;
     $params[] = $search_param;
     $params[] = $search_param;
@@ -45,7 +54,13 @@ $stmt->execute();
 $reports = $stmt->get_result();
 
 // Get unique subjects for filter dropdown
-$subjects = $conn->query("SELECT DISTINCT subject FROM reports ORDER BY subject ASC");
+$subjects = $conn->query("
+    SELECT DISTINCT s.subject_name 
+    FROM reports r 
+    JOIN subjects s ON r.subject_id = s.subject_id 
+    WHERE r.course_id = '$course_id' AND r.year = '$year' AND r.section_id = '$section_id' 
+    ORDER BY s.subject_name ASC
+");
 
 // Get student's attendance to find missed classes
 $my_absences = $conn->query("
@@ -85,8 +100,8 @@ while ($row = $my_absences->fetch_assoc()) {
                 <select name="subject">
                     <option value="">All Subjects</option>
                     <?php while ($s = $subjects->fetch_assoc()): ?>
-                        <option value="<?php echo htmlspecialchars($s['subject']); ?>" <?php echo $filter_subject === $s['subject'] ? 'selected' : ''; ?>>
-                            <?php echo htmlspecialchars($s['subject']); ?>
+                        <option value="<?php echo htmlspecialchars($s['subject_name']); ?>" <?php echo $filter_subject === $s['subject_name'] ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($s['subject_name']); ?>
                         </option>
                     <?php endwhile; ?>
                 </select>
@@ -113,7 +128,7 @@ while ($row = $my_absences->fetch_assoc()) {
                         <div style="font-size:11px;color:#ef4444;font-weight:600;margin-bottom:8px;">⚠️ MISSED CLASS - Review notes & homework</div>
                     <?php endif; ?>
                     <div class="report-header">
-                        <span class="report-subject"><?php echo htmlspecialchars($r['subject']); ?></span>
+                        <span class="report-subject"><?php echo htmlspecialchars($r['subject_name']); ?></span>
                         <span class="report-date"><?php echo date('M d, Y', strtotime($r['date'])); ?></span>
                     </div>
                     <div class="report-topic"><?php echo htmlspecialchars($r['topic']); ?></div>

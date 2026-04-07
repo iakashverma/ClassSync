@@ -7,13 +7,21 @@ checkRole('student');
 $active_page = 'assignments';
 $user_id = $_SESSION['user_id'];
 
+// Get student class details
+$user_info = $conn->query("SELECT course_id, year, section_id FROM users WHERE id = $user_id")->fetch_assoc();
+$course_id = $user_info['course_id'] ?? 0;
+$year = $user_info['year'] ?? '';
+$section_id = $user_info['section_id'] ?? 0;
+
 // Get all assignments with student's submission status
 $assignments = $conn->query("
-    SELECT a.*, u.name as teacher_name,
-        s.id as submission_id, s.status as submission_status, s.submission_text, s.file_path, s.submitted_at
+    SELECT a.*, u.name as teacher_name, s.subject_name,
+        sub.id as submission_id, sub.status as submission_status, sub.submission_text, sub.submitted_at as submitted_at, sub.file_path as file_path
     FROM assignments a
     JOIN users u ON a.teacher_id = u.id
-    LEFT JOIN submissions s ON s.assignment_id = a.id AND s.student_id = $user_id
+    JOIN subjects s ON a.subject_id = s.subject_id
+    LEFT JOIN submissions sub ON sub.assignment_id = a.id AND sub.student_id = $user_id
+    WHERE a.course_id = '$course_id' AND a.year = '$year' AND a.section_id = '$section_id'
     ORDER BY a.deadline DESC
 ");
 ?>
@@ -68,7 +76,7 @@ $assignments = $conn->query("
                     <div style="display:flex;justify-content:space-between;align-items:flex-start;">
                         <div>
                             <h3 style="margin-bottom:5px;"><?php echo htmlspecialchars($a['title']); ?></h3>
-                            <span style="font-size:12px;color:#94a3b8;">By: <?php echo htmlspecialchars($a['teacher_name']); ?></span>
+                            <span style="font-size:12px;color:#94a3b8;"><?php echo htmlspecialchars($a['subject_name']); ?> • By: <?php echo htmlspecialchars($a['teacher_name']); ?></span>
                         </div>
                         <div style="text-align:right;">
                             <div style="font-size:13px;color:#64748b;">Deadline: <?php echo date('M d, Y', strtotime($a['deadline'])); ?></div>

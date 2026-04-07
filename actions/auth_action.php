@@ -120,11 +120,23 @@ if ($action === 'register') {
     }
     $check->close();
 
-    // Hash password and insert
+    // Hash password
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    $stmt = $conn->prepare("INSERT INTO users (name, email, password, role, registration_number) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssss", $name, $email, $hashed_password, $role, $reg_no);
+    if ($role === 'student') {
+        $course_id = $_POST['course_id'] ?? null;
+        $year = $_POST['year'] ?? null;
+        $section_id = $_POST['section_id'] ?? null;
+        
+        $stmt = $conn->prepare("INSERT INTO users (name, email, password, role, registration_number, course_id, year, section_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssisi", $name, $email, $hashed_password, $role, $reg_no, $course_id, $year, $section_id);
+    } else {
+        $department = $_POST['department'] ?? null;
+        $subject_id = $_POST['subject_id'] ?? null;
+        
+        $stmt = $conn->prepare("INSERT INTO users (name, email, password, role, registration_number, department, subject_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssssi", $name, $email, $hashed_password, $role, $reg_no, $department, $subject_id);
+    }
 
     if ($stmt->execute()) {
         header("Location: /ClassSync/login.php?success=registered");
