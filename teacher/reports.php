@@ -18,14 +18,23 @@ if (isset($_GET['edit'])) {
     $stmt->close();
 }
 
-// Get assigned classes mapped
-$assigned_classes = $conn->query("
-    SELECT ca.id as class_assignment_id, c.course_id, c.course_name, sec.section_id, sec.year, sec.section_name, sub.subject_id, sub.subject_name 
-    FROM class_assignments ca
-    JOIN courses c ON ca.course_id = c.course_id
-    JOIN sections sec ON ca.section_id = sec.section_id
-    JOIN subjects sub ON ca.subject_id = sub.subject_id
-    WHERE ca.teacher_id = $user_id
+// Get teacher's course and assigned subjects
+$teacher_data = $conn->query("SELECT teacher_course_id FROM users WHERE id = $user_id")->fetch_assoc();
+$tc_id = $teacher_data['teacher_course_id'] ?? 0;
+
+$my_sections = $conn->query("
+    SELECT s.section_id, s.year, s.section_name, c.course_name 
+    FROM sections s 
+    JOIN courses c ON s.course_id = c.course_id 
+    WHERE s.course_id = $tc_id
+    ORDER BY s.year ASC, s.section_name ASC
+");
+
+$my_subjects = $conn->query("
+    SELECT cs.id as subject_id, cs.subject_name 
+    FROM teacher_subjects ts 
+    JOIN course_subjects cs ON ts.course_subject_id = cs.id 
+    WHERE ts.teacher_id = $user_id
 ");
 
 // Get all reports by this teacher
@@ -34,7 +43,7 @@ $reports = $conn->query("
     FROM reports r 
     JOIN courses c ON r.course_id = c.course_id
     JOIN sections sec ON r.section_id = sec.section_id
-    JOIN subjects s ON r.subject_id = s.subject_id
+    JOIN course_subjects s ON r.subject_id = s.id
     WHERE r.teacher_id = $user_id ORDER BY r.date DESC
 ");
 ?>
@@ -80,16 +89,30 @@ $reports = $conn->query("
 
                     <div class="form-row">
                         <div class="form-group" style="flex: 2;">
-                            <label>Target Class & Subject</label>
-                            <select name="class_assignment_id" required>
-                                <option value="">Select Target Audience...</option>
-                                <?php while ($cls = $assigned_classes->fetch_assoc()): ?>
-                                    <option value="<?php echo $cls['class_assignment_id']; ?>"
-                                    <?php echo ($edit_report && $edit_report['subject_id'] == $cls['subject_id'] && $edit_report['course_id'] == $cls['course_id'] && $edit_report['section_id'] == $cls['section_id']) ? 'selected' : ''; ?>>
-                                        <?php echo htmlspecialchars($cls['course_name'] . ' - ' . $cls['year'] . ' Year (Sec ' . $cls['section_name'] . ') • ' . $cls['subject_name']); ?>
-                                    </option>
-                                <?php endwhile; ?>
-                            </select>
+                            <div style="display:flex;gap:10px;">
+                                <div style="flex:1;">
+                                    <label>Target Class</label>
+                                    <select name="section_id" required>
+                                        <option value="">Select Target Class...</option>
+                                        <?php while ($sec = $my_sections->fetch_assoc()): ?>
+                                            <option value="<?php echo $sec['section_id']; ?>" <?php echo ($edit_report && $edit_report['section_id'] == $sec['section_id']) ? 'selected' : ''; ?>>
+                                                <?php echo htmlspecialchars($sec['course_name'] . ' - ' . $sec['year'] . ' Year (Sec ' . $sec['section_name'] . ')'); ?>
+                                            </option>
+                                        <?php endwhile; ?>
+                                    </select>
+                                </div>
+                                <div style="flex:1;">
+                                    <label>Subject</label>
+                                    <select name="subject_id" required>
+                                        <option value="">Select Subject...</option>
+                                        <?php while ($sub = $my_subjects->fetch_assoc()): ?>
+                                            <option value="<?php echo $sub['subject_id']; ?>" <?php echo ($edit_report && $edit_report['subject_id'] == $sub['subject_id']) ? 'selected' : ''; ?>>
+                                                <?php echo htmlspecialchars($sub['subject_name']); ?>
+                                            </option>
+                                        <?php endwhile; ?>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Topic</label>

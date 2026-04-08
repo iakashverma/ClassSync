@@ -10,27 +10,31 @@ $user_id = $_SESSION['user_id'];
 $selected_date = $_GET['date'] ?? date('Y-m-d');
 $selected_class_id = $_GET['class_id'] ?? '';
 
-// Get assigned classes mapped
-$assigned_classes = $conn->query("
-    SELECT ca.id as class_assignment_id, c.course_id, c.course_name, sec.section_id, sec.year, sec.section_name, sub.subject_id, sub.subject_name 
-    FROM class_assignments ca
-    JOIN courses c ON ca.course_id = c.course_id
-    JOIN sections sec ON ca.section_id = sec.section_id
-    JOIN subjects sub ON ca.subject_id = sub.subject_id
-    WHERE ca.teacher_id = $user_id
+// Get teacher's course
+$teacher_data = $conn->query("SELECT teacher_course_id FROM users WHERE id = $user_id")->fetch_assoc();
+$tc_id = $teacher_data['teacher_course_id'] ?? 0;
+
+// Get available sections for this teacher's course
+$my_sections = $conn->query("
+    SELECT s.section_id, s.year, s.section_name, c.course_id, c.course_name 
+    FROM sections s 
+    JOIN courses c ON s.course_id = c.course_id 
+    WHERE s.course_id = $tc_id
+    ORDER BY s.year ASC, s.section_name ASC
 ");
 
 $assigned_classes_list = [];
-while ($row = $assigned_classes->fetch_assoc()) {
+while ($row = $my_sections->fetch_assoc()) {
     $assigned_classes_list[] = $row;
 }
+
 if (empty($selected_class_id) && count($assigned_classes_list) > 0) {
-    $selected_class_id = $assigned_classes_list[0]['class_assignment_id'];
+    $selected_class_id = $assigned_classes_list[0]['section_id'];
 }
 
 $selected_class = null;
 foreach ($assigned_classes_list as $c) {
-    if ($c['class_assignment_id'] == $selected_class_id) {
+    if ($c['section_id'] == $selected_class_id) {
         $selected_class = $c;
         break;
     }
@@ -104,7 +108,7 @@ $history = $history_stmt->get_result();
                 <label style="font-weight:600;font-size:14px;">Select Class:</label>
                 <select name="class_id">
                     <?php foreach ($assigned_classes_list as $cls): ?>
-                        <option value="<?php echo $cls['class_assignment_id']; ?>" <?php echo $selected_class_id == $cls['class_assignment_id'] ? 'selected' : ''; ?>>
+                        <option value="<?php echo $cls['section_id']; ?>" <?php echo $selected_class_id == $cls['section_id'] ? 'selected' : ''; ?>>
                             <?php echo htmlspecialchars($cls['course_name'] . ' - ' . $cls['year'] . ' Year (Sec ' . $cls['section_name'] . ')'); ?>
                         </option>
                     <?php endforeach; ?>

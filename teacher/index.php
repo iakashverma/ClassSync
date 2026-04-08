@@ -9,15 +9,14 @@ $user_id = $_SESSION['user_id'];
 
 // Get teacher specific info
 $teacher_info = $conn->query("
-    SELECT u.name, u.department, s.subject_name 
+    SELECT u.name, c.course_name 
     FROM users u 
-    LEFT JOIN subjects s ON u.subject_id = s.subject_id 
+    LEFT JOIN courses c ON u.teacher_course_id = c.course_id 
     WHERE u.id = $user_id
 ")->fetch_assoc();
 
 $teacher_name = $teacher_info['name'] ?? '';
-$department_name = $teacher_info['department'] ?? 'N/A';
-$principal_subject = $teacher_info['subject_name'] ?? 'N/A';
+$course_name = $teacher_info['course_name'] ?? 'N/A';
 
 // Stats
 $my_reports = $conn->query("SELECT COUNT(*) as cnt FROM reports WHERE teacher_id = $user_id")->fetch_assoc()['cnt'];
@@ -81,8 +80,7 @@ $assigned_classes = $conn->query("
             <div style="background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%); padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 5px solid #3b82f6;">
                 <h2 style="margin: 0; color: #1e3a8a; font-size: 20px; margin-bottom: 5px;">👨‍🏫 <?php echo htmlspecialchars($teacher_name); ?></h2>
                 <div style="color: #475569; font-size: 15px; display: flex; gap: 20px;">
-                    <span><strong>Department:</strong> <?php echo htmlspecialchars($department_name); ?></span>
-                    <span><strong>Primary Subject:</strong> <?php echo htmlspecialchars($principal_subject); ?></span>
+                    <span><strong>Course:</strong> <?php echo htmlspecialchars($course_name); ?></span>
                 </div>
             </div>
 

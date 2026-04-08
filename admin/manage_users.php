@@ -59,7 +59,7 @@ $sections = [];
 while ($row = $sections_result->fetch_assoc()) { $sections[] = $row; }
 
 // Fetch Subjects
-$subjects_result = $conn->query("SELECT * FROM subjects");
+$subjects_result = $conn->query("SELECT * FROM course_subjects");
 $subjects = [];
 while ($row = $subjects_result->fetch_assoc()) { $subjects[] = $row; }
 
@@ -72,7 +72,7 @@ $query = "
     FROM users u 
     LEFT JOIN courses c ON u.course_id = c.course_id 
     LEFT JOIN sections sec ON u.section_id = sec.section_id 
-    LEFT JOIN subjects sub ON u.subject_id = sub.subject_id 
+    LEFT JOIN course_subjects sub ON u.subject_id = sub.id 
     WHERE 1=1
 ";
 $params = [];
@@ -175,7 +175,7 @@ $users = $stmt->get_result();
                                 <select name="subject_id">
                                     <option value="">Select Target Subject</option>
                                     <?php foreach($subjects as $subject): ?>
-                                        <option value="<?= $subject['subject_id'] ?>"><?= htmlspecialchars($subject['subject_name']) ?></option>
+                                        <option value="<?= $subject['id'] ?>"><?= htmlspecialchars($subject['subject_name']) ?> (<?= htmlspecialchars($subject['course_id']) ?>)</option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>

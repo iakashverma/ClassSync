@@ -25,15 +25,16 @@ if ($action === 'create_assignment') {
     $description = trim($_POST['description'] ?? '');
     $deadline = $_POST['deadline'] ?? '';
     
-    // Fetch target class mapping from DB
-    $class_assignment_id = intval($_POST['class_assignment_id'] ?? 0);
-    $ca_query = $conn->query("SELECT course_id, year, section_id, subject_id FROM class_assignments WHERE id = $class_assignment_id");
-    $class_data = $ca_query->fetch_assoc();
+    // Fetch target class mapping from UI inputs directly
+    $section_id = intval($_POST['section_id'] ?? 0);
+    $subject_id = intval($_POST['subject_id'] ?? 0);
     
-    $subject_id = $class_data['subject_id'] ?? 0;
-    $course_id = $class_data['course_id'] ?? 0;
-    $year = $class_data['year'] ?? '';
-    $section_id = $class_data['section_id'] ?? 0;
+    // Fetch course_id and year from the selected section
+    $sec_query = $conn->query("SELECT course_id, year FROM sections WHERE section_id = $section_id");
+    $sec_data = $sec_query->fetch_assoc();
+    
+    $course_id = $sec_data['course_id'] ?? 0;
+    $year = $sec_data['year'] ?? '';
 
     if (empty($title) || empty($deadline) || empty($subject_id)) {
         header("Location: /ClassSync/teacher/assignments.php?error=required");

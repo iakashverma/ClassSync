@@ -11,7 +11,7 @@ $reports = $conn->query("
     SELECT r.*, u.name as teacher_name, s.subject_name 
     FROM reports r 
     JOIN users u ON r.teacher_id = u.id 
-    JOIN subjects s ON r.subject_id = s.subject_id 
+    JOIN course_subjects s ON r.subject_id = s.id 
     ORDER BY r.date DESC
 ");
 ?>

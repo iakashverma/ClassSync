@@ -131,14 +131,27 @@ if ($action === 'register') {
         $stmt = $conn->prepare("INSERT INTO users (name, email, password, role, registration_number, course_id, year, section_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("sssssisi", $name, $email, $hashed_password, $role, $reg_no, $course_id, $year, $section_id);
     } else {
+        // Teacher registration
         $department = $_POST['department'] ?? null;
-        $subject_id = $_POST['subject_id'] ?? null;
+        $teacher_course_id = $_POST['teacher_course_id'] ?? null;
+        $teacher_subjects = $_POST['teacher_subjects'] ?? [];
         
-        $stmt = $conn->prepare("INSERT INTO users (name, email, password, role, registration_number, department, subject_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssssi", $name, $email, $hashed_password, $role, $reg_no, $department, $subject_id);
+        $stmt = $conn->prepare("INSERT INTO users (name, email, password, role, registration_number, department, teacher_course_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssssi", $name, $email, $hashed_password, $role, $reg_no, $department, $teacher_course_id);
     }
 
     if ($stmt->execute()) {
+        // If teacher, insert selected subjects into teacher_subjects
+        if ($role === 'teacher' && !empty($teacher_subjects)) {
+            $teacher_id = $conn->insert_id;
+            $sub_stmt = $conn->prepare("INSERT INTO teacher_subjects (teacher_id, course_subject_id) VALUES (?, ?)");
+            foreach ($teacher_subjects as $cs_id) {
+                $cs_id = intval($cs_id);
+                $sub_stmt->bind_param("ii", $teacher_id, $cs_id);
+                $sub_stmt->execute();
+            }
+            $sub_stmt->close();
+        }
         header("Location: /ClassSync/login.php?success=registered");
     } else {
         header("Location: /ClassSync/register.php?error=failed");
