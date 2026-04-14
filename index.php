@@ -21,7 +21,7 @@ try {
             <div class="shape shape-3"></div>
         </div>
         <div class="container">
-            <div class="hero-badge">🚀 Smart Classroom Platform</div>
+            <div class="hero-badge">🚀 Smart Classroom hiii Platform</div>
             <h1>Digitize Your<br><span class="hero-highlight">Classroom Experience</span></h1>
             <p>Track daily class work, attendance, and assignments in one place. A simple and organized platform for teachers and students.</p>
             <div class="hero-buttons">
