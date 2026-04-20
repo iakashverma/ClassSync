@@ -14,10 +14,6 @@ require_once __DIR__ . '/includes/config.php';
     <nav class="top-nav">
         <div class="brand">ClassSync</div>
         <div class="links">
-            <!-- <a class="nav-link-lite" href="#features">Features</a>
-            <a class="nav-link-lite" href="#workflow">Workflow</a>
-            <a class="nav-link-lite" href="#roles">Roles</a>
-            <a class="nav-link-lite" href="#about">About</a> -->
             <a class="btn admin" href="<?php echo BASE_URL; ?>/admin/login.php">Admin Login</a>
             <a class="btn teacher" href="<?php echo BASE_URL; ?>/teacher/login.php">Teacher Login</a>
             <a class="btn student" href="<?php echo BASE_URL; ?>/student/login.php">Student Login</a>
@@ -33,10 +29,10 @@ require_once __DIR__ . '/includes/config.php';
                 into one focused platform for administrators, teachers, and students.
             </p>
             <div class="hero-actions">
-                <a class="btn primary" href="#features">Explore Platform</a>
-                <a class="btn ghost" href="./register.php">Join Now</a>
+                <a class="btn primary" href="#">Explore Platform</a>
+                <a class="btn ghost" href="#">Join Now</a>
             </div>
-            <div class="hero-metrics">
+            <!-- <div class="hero-metrics">
                 <div class="hero-metric">
                     <span class="hero-metric-value">3</span>
                     <span class="hero-metric-label">Role-based portals</span>
@@ -49,7 +45,7 @@ require_once __DIR__ . '/includes/config.php';
                     <span class="hero-metric-value">24x7</span>
                     <span class="hero-metric-label">Always-available access</span>
                 </div>
-            </div>
+            </div> -->
         </div>
         <aside class="hero-card">
             <h3>Platform Snapshot</h3>
