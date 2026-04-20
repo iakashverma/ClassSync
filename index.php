@@ -1,271 +1,188 @@
 <?php
-$page_title = 'Home';
-include 'includes/header.php';
-
-// Get live stats from database if available
-$stats = ['teachers' => 0, 'students' => 0, 'reports' => 0, 'assignments' => 0];
-try {
-    require_once 'config/database.php';
-    $stats['teachers'] = $conn->query("SELECT COUNT(*) as c FROM users WHERE role='teacher'")->fetch_assoc()['c'];
-    $stats['students'] = $conn->query("SELECT COUNT(*) as c FROM users WHERE role='student'")->fetch_assoc()['c'];
-    $stats['reports'] = $conn->query("SELECT COUNT(*) as c FROM reports")->fetch_assoc()['c'];
-    $stats['assignments'] = $conn->query("SELECT COUNT(*) as c FROM assignments")->fetch_assoc()['c'];
-} catch (Exception $e) {}
+require_once __DIR__ . '/includes/config.php';
 ?>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-bg-shapes">
-            <div class="shape shape-1"></div>
-            <div class="shape shape-2"></div>
-            <div class="shape shape-3"></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClassSync - Daily College Class Work Report System</title>
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/style.css?v=20260418d">
+    <script defer src="<?php echo BASE_URL; ?>/js/app.js"></script>
+</head>
+<body class="landing">
+    <nav class="top-nav">
+        <div class="brand">ClassSync</div>
+        <div class="links">
+            <!-- <a class="nav-link-lite" href="#features">Features</a>
+            <a class="nav-link-lite" href="#workflow">Workflow</a>
+            <a class="nav-link-lite" href="#roles">Roles</a>
+            <a class="nav-link-lite" href="#about">About</a> -->
+            <a class="btn admin" href="<?php echo BASE_URL; ?>/admin/login.php">Admin Login</a>
+            <a class="btn teacher" href="<?php echo BASE_URL; ?>/teacher/login.php">Teacher Login</a>
+            <a class="btn student" href="<?php echo BASE_URL; ?>/student/login.php">Student Login</a>
         </div>
-        <div class="container">
-            <div class="hero-badge">🚀 Smart Classroom hiii Platform</div>
-            <h1>Digitize Your<br><span class="hero-highlight">Classroom Experience</span></h1>
-            <p>Track daily class work, attendance, and assignments in one place. A simple and organized platform for teachers and students.</p>
-            <div class="hero-buttons">
-                <a href="/ClassSync/register.php" class="btn btn-primary">
-                    <span>Get Started</span>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </a>
-                <a href="/ClassSync/login.php" class="btn btn-outline">Login</a>
+    </nav>
+
+    <section class="hero" id="top">
+        <div class="hero-copy">
+            <p class="hero-kicker">Secure Digital Academic Workflow</p>
+            <h1> Daily College Class Work <span> Report Book System</span></h1>
+            <p>
+                ClassSync unifies assignment delivery, attendance, submissions, and performance reporting
+                into one focused platform for administrators, teachers, and students.
+            </p>
+            <div class="hero-actions">
+                <a class="btn primary" href="#features">Explore Platform</a>
+                <a class="btn ghost" href="./register.php">Join Now</a>
+            </div>
+            <div class="hero-metrics">
+                <div class="hero-metric">
+                    <span class="hero-metric-value">3</span>
+                    <span class="hero-metric-label">Role-based portals</span>
+                </div>
+                <div class="hero-metric">
+                    <span class="hero-metric-value">1</span>
+                    <span class="hero-metric-label">Unified academic flow</span>
+                </div>
+                <div class="hero-metric">
+                    <span class="hero-metric-value">24x7</span>
+                    <span class="hero-metric-label">Always-available access</span>
+                </div>
             </div>
         </div>
+        <aside class="hero-card">
+            <h3>Platform Snapshot</h3>
+            <p>Designed to reduce manual effort while preserving strong course, year, and section discipline.</p>
+            <!-- <div class="hero-insights">
+                <article class="hero-insight insight-track">
+                    <span class="hero-insight-icon" aria-hidden="true">01</span>
+                    <h4>Track</h4>
+                    <p>See attendance and submission status clearly for every class group.</p>
+                </article>
+                <article class="hero-insight insight-coordinate">
+                    <span class="hero-insight-icon" aria-hidden="true">02</span>
+                    <h4>Coordinate</h4>
+                    <p>Give teachers and students dedicated workspaces aligned with their responsibilities.</p>
+                </article>
+                <article class="hero-insight insight-report">
+                    <span class="hero-insight-icon" aria-hidden="true">03</span>
+                    <h4>Report</h4>
+                    <p>Generate weekly progress insights without reconciling scattered records manually.</p>
+                </article>
+            </div> -->
+        </aside>
     </section>
 
-    <!-- Stats Counter Section -->
-    <section class="stats-section">
-        <div class="container">
-            <div class="stats-row">
-                <div class="stat-item fade-up">
-                    <div class="stat-icon">👨‍🏫</div>
-                    <span class="stat-number"><?php echo $stats['teachers']; ?>+</span>
-                    <span class="stat-text">Teachers</span>
-                </div>
-                <div class="stat-item fade-up">
-                    <div class="stat-icon">👨‍🎓</div>
-                    <span class="stat-number"><?php echo $stats['students']; ?>+</span>
-                    <span class="stat-text">Students</span>
-                </div>
-                <div class="stat-item fade-up">
-                    <div class="stat-icon">📋</div>
-                    <span class="stat-number"><?php echo $stats['reports']; ?>+</span>
-                    <span class="stat-text">Reports Created</span>
-                </div>
-                <div class="stat-item fade-up">
-                    <div class="stat-icon">📝</div>
-                    <span class="stat-number"><?php echo $stats['assignments']; ?>+</span>
-                    <span class="stat-text">Assignments</span>
-                </div>
+    <!-- <section class="sections">
+        <div class="block landing-block" id="features">
+            <div class="section-head">
+                <p class="section-label">Capabilities</p>
+                <h2>Everything Needed for Daily Academic Delivery</h2>
+                <p class="block-sub">Purpose-built modules keep classroom operations consistent, traceable, and easy to manage.</p>
+            </div>
+            <div class="feature-grid">
+                <article class="landing-feature-card">
+                    <span class="feature-icon">A</span>
+                    <h3>Classwork Publishing</h3>
+                    <p>Create structured tasks with descriptions, guidance, and strict deadlines.</p>
+                </article>
+                <article class="landing-feature-card">
+                    <span class="feature-icon">S</span>
+                    <h3>Flexible Submission</h3>
+                    <p>Accept typed responses or PDF uploads with cleaner tracking of pending work.</p>
+                </article>
+                <article class="landing-feature-card">
+                    <span class="feature-icon">R</span>
+                    <h3>Attendance and Review</h3>
+                    <p>Mark attendance, review submissions, and provide feedback from one interface.</p>
+                </article>
+                <article class="landing-feature-card">
+                    <span class="feature-icon">I</span>
+                    <h3>Insights and Alerts</h3>
+                    <p>Surface missed tasks, class trends, and weekly summaries with less manual effort.</p>
+                </article>
             </div>
         </div>
-    </section>
 
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <div class="container">
-            <div class="section-header fade-up">
-                <span class="section-badge">✨ Features</span>
-                <h2 class="section-title">Everything You Need</h2>
-                <p class="section-subtitle">Powerful tools to manage your classroom digitally</p>
+        <div class="block landing-block" id="workflow">
+            <div class="section-head">
+                <p class="section-label">Workflow</p>
+                <h2>A Simple End-to-End Academic Cycle</h2>
+                <p class="block-sub">Each role sees only the actions they need, making daily execution faster and cleaner.</p>
             </div>
-            <div class="features-grid">
-                <div class="feature-card fade-up">
-                    <div class="feature-icon-wrap blue"><div class="icon">📚</div></div>
-                    <h3>Daily Class Reports</h3>
-                    <p>Teachers add daily reports with subject, topic, description and homework. Students view and filter easily.</p>
-                </div>
-                <div class="feature-card fade-up">
-                    <div class="feature-icon-wrap green"><div class="icon">📊</div></div>
-                    <h3>Attendance Tracking</h3>
-                    <p>Mark and monitor student attendance with percentage tracking and low attendance alerts below 75%.</p>
-                </div>
-                <div class="feature-card fade-up">
-                    <div class="feature-icon-wrap purple"><div class="icon">📝</div></div>
-                    <h3>Assignment Management</h3>
-                    <p>Upload assignments in PDF/DOC format, track submissions, and manage deadlines in one place.</p>
-                </div>
-                <div class="feature-card fade-up">
-                    <div class="feature-icon-wrap orange"><div class="icon">📅</div></div>
-                    <h3>Academic Timeline</h3>
-                    <p>View your complete learning history organized by date and subject for easy revision.</p>
-                </div>
-                <div class="feature-card fade-up">
-                    <div class="feature-icon-wrap red"><div class="icon">⚠️</div></div>
-                    <h3>Missed Class Recovery</h3>
-                    <p>Students can check missed lectures and access notes & homework to stay on track.</p>
-                </div>
-                <div class="feature-card fade-up">
-                    <div class="feature-icon-wrap yellow"><div class="icon">🔔</div></div>
-                    <h3>Notifications</h3>
-                    <p>Get notified about new reports, assignments, and upcoming deadlines automatically.</p>
-                </div>
-                <div class="feature-card fade-up">
-                    <div class="feature-icon-wrap teal"><div class="icon">🔍</div></div>
-                    <h3>Search & Filter</h3>
-                    <p>Quickly find reports by subject, topic, or date using built-in search and filter tools.</p>
-                </div>
-                <div class="feature-card fade-up">
-                    <div class="feature-icon-wrap dark"><div class="icon">🔐</div></div>
-                    <h3>Role-Based Access</h3>
-                    <p>Separate dashboards for Admin, Teacher, and Student with secure login and access control.</p>
-                </div>
-            </div>
+            <ol class="lp-workflow">
+                <li>
+                    <h3>1. Configure Class Context</h3>
+                    <p>Admin maps users to course, year, and section so every task route is predefined.</p>
+                </li>
+                <li>
+                    <h3>2. Publish Classwork</h3>
+                    <p>Teacher posts assignments with clear instructions and submission deadlines.</p>
+                </li>
+                <li>
+                    <h3>3. Submit and Validate</h3>
+                    <p>Student submits work on time while deadline rules keep records consistent.</p>
+                </li>
+                <li>
+                    <h3>4. Review and Report</h3>
+                    <p>Teacher evaluates outcomes and the platform compiles performance visibility for admin.</p>
+                </li>
+            </ol>
         </div>
-    </section>
 
-    <!-- How It Works Section -->
-    <section class="how-it-works" id="how-it-works">
-        <div class="container">
-            <div class="section-header fade-up">
-                <span class="section-badge">🛠️ Process</span>
-                <h2 class="section-title">How It Works</h2>
-                <p class="section-subtitle">Get started in 3 simple steps</p>
+        <div class="block landing-block" id="roles">
+            <div class="section-head">
+                <p class="section-label">Role Coverage</p>
+                <h2>Focused Dashboards for Every User Type</h2>
+                <p class="block-sub">Clear responsibilities reduce confusion and improve accountability across departments.</p>
             </div>
-            <div class="steps-grid">
-                <div class="step-card fade-up">
-                    <div class="step-number">1</div>
-                    <div class="step-icon">📝</div>
-                    <h3>Register</h3>
-                    <p>Create your account by selecting your role — Teacher or Student. Enter your registration number, email, and password.</p>
-                </div>
-                <div class="step-arrow fade-up">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </div>
-                <div class="step-card fade-up">
-                    <div class="step-number">2</div>
-                    <div class="step-icon">🔑</div>
-                    <h3>Login</h3>
-                    <p>Use your registration number or email to log in. The system automatically detects your role and redirects you.</p>
-                </div>
-                <div class="step-arrow fade-up">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </div>
-                <div class="step-card fade-up">
-                    <div class="step-number">3</div>
-                    <div class="step-icon">🎯</div>
-                    <h3>Start Using</h3>
-                    <p>Teachers can add reports, mark attendance, and create assignments. Students can view and submit work.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- User Roles Section -->
-    <section class="user-roles" id="roles">
-        <div class="container">
-            <div class="section-header fade-up">
-                <span class="section-badge">👥 Roles</span>
-                <h2 class="section-title">User Roles</h2>
-                <p class="section-subtitle">Each role has its own dashboard and set of tools</p>
-            </div>
-            <div class="roles-grid">
-                <div class="role-card role-admin fade-up">
-                    <div class="role-header">
-                        <span class="role-emoji">👨‍💻</span>
-                        <h3>Admin</h3>
-                    </div>
-                    <ul class="role-features">
-                        <li>✅ Full system control</li>
-                        <li>✅ Manage all users</li>
-                        <li>✅ View all reports & attendance</li>
-                        <li>✅ Monitor assignments & submissions</li>
-                        <li>✅ Access teacher & student panels</li>
+            <div class="role-grid">
+                <article class="role-card role-admin">
+                    <h3>Admin</h3>
+                    <p class="role-tagline">Control structure, users, and reporting standards.</p>
+                    <ul class="role-list">
+                        <li>Maintain class mapping and user assignments</li>
+                        <li>Monitor participation and submission health</li>
+                        <li>Review weekly academic trends</li>
                     </ul>
-                </div>
-                <div class="role-card role-teacher fade-up">
-                    <div class="role-header">
-                        <span class="role-emoji">👨‍🏫</span>
-                        <h3>Teacher</h3>
-                    </div>
-                    <ul class="role-features">
-                        <li>✅ Add daily class reports</li>
-                        <li>✅ Mark student attendance</li>
-                        <li>✅ Create & manage assignments</li>
-                        <li>✅ View student submissions</li>
-                        <li>✅ Download submitted files</li>
+                </article>
+                <article class="role-card role-teacher">
+                    <h3>Teacher</h3>
+                    <p class="role-tagline">Deliver classwork and evaluate progress efficiently.</p>
+                    <ul class="role-list">
+                        <li>Publish assignments with strict deadlines</li>
+                        <li>Track attendance and submission quality</li>
+                        <li>Provide feedback and maintain continuity</li>
                     </ul>
-                </div>
-                <div class="role-card role-student fade-up">
-                    <div class="role-header">
-                        <span class="role-emoji">👨‍🎓</span>
-                        <h3>Student</h3>
-                    </div>
-                    <ul class="role-features">
-                        <li>✅ View daily class reports</li>
-                        <li>✅ Check attendance percentage</li>
-                        <li>✅ Submit assignments (PDF/DOC)</li>
-                        <li>✅ Track academic timeline</li>
-                        <li>✅ Recover missed class notes</li>
+                </article>
+                <article class="role-card role-student">
+                    <h3>Student</h3>
+                    <p class="role-tagline">Stay organized with clear tasks and timelines.</p>
+                    <ul class="role-list">
+                        <li>View assigned classwork by section</li>
+                        <li>Submit text or PDF work on time</li>
+                        <li>Track attendance and completion status</li>
                     </ul>
+                </article>
+            </div>
+        </div>
+
+        <div class="block landing-block" id="about">
+            <div class="about-panel">
+                <div>
+                    <p class="section-label">Why ClassSync</p>
+                    <h2>Built for Consistency, Transparency, and Speed</h2>
+                    <p class="block-sub">ClassSync streamlines routine coordination, reduces manual errors, and helps teams focus on teaching outcomes.</p>
                 </div>
+                <a class="btn primary" href="<?php echo BASE_URL; ?>/admin/login.php">Open Admin Portal</a>
             </div>
         </div>
-    </section>
+    </section> -->
 
-    <!-- Technology Stack Section -->
-    <section class="tech-stack">
-        <div class="container">
-            <div class="section-header fade-up">
-                <span class="section-badge">⚙️ Tech</span>
-                <h2 class="section-title">Technology Stack</h2>
-                <p class="section-subtitle">Built with industry-standard web technologies</p>
-            </div>
-            <div class="tech-grid fade-up">
-                <div class="tech-item"><div class="tech-icon">🐘</div><span>PHP</span></div>
-                <div class="tech-item"><div class="tech-icon">🗄️</div><span>MySQL</span></div>
-                <div class="tech-item"><div class="tech-icon">🌐</div><span>HTML5</span></div>
-                <div class="tech-item"><div class="tech-icon">🎨</div><span>CSS3</span></div>
-                <div class="tech-item"><div class="tech-icon">⚡</div><span>JavaScript</span></div>
-                <div class="tech-item"><div class="tech-icon">🖥️</div><span>XAMPP</span></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section class="about" id="about">
-        <div class="container">
-            <div class="section-header fade-up">
-                <span class="section-badge">ℹ️ About</span>
-                <h2 class="section-title">About Class Sync</h2>
-            </div>
-            <div class="about-content fade-up">
-                <p>Class Sync is a web-based classroom management system designed to replace traditional physical registers with a modern, organized, and accessible digital platform. It helps teachers record daily classroom activities, allows students to track their learning progress, and enables administrators to manage the entire system efficiently.</p>
-                <p class="mt-2">The system has been developed as a part of an MCA program, showcasing full-stack web development with PHP, MySQL, and a clean, user-focused interface. It demonstrates the practical application of database management, authentication systems, and role-based access control in a real-world academic environment.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="cta-bg-shapes">
-            <div class="shape shape-1"></div>
-            <div class="shape shape-2"></div>
-        </div>
-        <div class="container fade-up">
-            <h2>Ready to Get Started?</h2>
-            <p>Join Class Sync today and experience a smarter way to manage your classroom.</p>
-            <div class="hero-buttons">
-                <a href="/ClassSync/register.php" class="btn btn-primary">Create Account</a>
-                <a href="/ClassSync/login.php" class="btn btn-outline">Login Now</a>
-            </div>
-        </div>
-    </section>
-
-<!-- Scroll Animation Script -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const fadeEls = document.querySelectorAll('.fade-up');
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-            }
-        });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-    fadeEls.forEach(el => observer.observe(el));
-});
-</script>
-
-<?php include 'includes/footer.php'; ?>
+    <footer class="footer landing-footer">
+        <p>© 2026 ClassSync | Daily College Class Work Report Book System .<br>
+     Crafted with ❤️ by Akash Verma</p>
+    </footer>
+</body>
+</html>
