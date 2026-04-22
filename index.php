@@ -134,7 +134,7 @@ require_once __DIR__ . '/includes/config.php';
                 <p class="block-sub">Clear responsibilities reduce confusion and improve accountability across departments.</p>
             </div>
             <div class="role-grid">
-                <article class="role-card role-admin">
+                <arti   `cle class="role-card role-admin">
                     <h3>Admin</h3>
                     <p class="role-tagline">Control structure, users, and reporting standards.</p>
                     <ul class="role-list">
