@@ -200,4 +200,19 @@ SET email = 'admin@classsync.com',
 WHERE role = 'admin'
     AND email IN ('admin@classsync.local', 'admin@classsync.com');
 
--- Default admin password is: classsync@121
+-- Teacher login.....
+
+-- Teacher ID: 3217, 
+-- Email: kunal3217@classsync.com, 
+-- MCA	1st Year	A	Java
+
+
+
+-- Student login.....
+
+-- Student ID: 980638, 
+-- Email: dhiraj980638@classsync.com, 
+-- MCA	1st Year	A
+
+
+-- Default password for all user: classsync@121
