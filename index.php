@@ -3,6 +3,7 @@ require_once __DIR__ . '/includes/config.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@ require_once __DIR__ . '/includes/config.php';
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/style.css?v=20260418d">
     <script defer src="<?php echo BASE_URL; ?>/js/app.js"></script>
 </head>
+
 <body class="landing">
     <nav class="top-nav">
         <div class="brand">ClassSync</div>
@@ -32,7 +34,7 @@ require_once __DIR__ . '/includes/config.php';
                 <a class="btn primary" href="#">Explore Platform</a>
                 <a class="btn ghost" href="#">Join Now</a>
             </div>
-            <!-- <div class="hero-metrics">
+            <div class="hero-metrics">
                 <div class="hero-metric">
                     <span class="hero-metric-value">3</span>
                     <span class="hero-metric-label">Role-based portals</span>
@@ -45,12 +47,12 @@ require_once __DIR__ . '/includes/config.php';
                     <span class="hero-metric-value">24x7</span>
                     <span class="hero-metric-label">Always-available access</span>
                 </div>
-            </div> -->
+            </div>
         </div>
         <aside class="hero-card">
             <h3>Platform Snapshot</h3>
             <p>Designed to reduce manual effort while preserving strong course, year, and section discipline.</p>
-            <!-- <div class="hero-insights">
+            <div class="hero-insights">
                 <article class="hero-insight insight-track">
                     <span class="hero-insight-icon" aria-hidden="true">01</span>
                     <h4>Track</h4>
@@ -66,16 +68,17 @@ require_once __DIR__ . '/includes/config.php';
                     <h4>Report</h4>
                     <p>Generate weekly progress insights without reconciling scattered records manually.</p>
                 </article>
-            </div> -->
+            </div>
         </aside>
     </section>
 
-    <!-- <section class="sections">
+    <section class="sections">
         <div class="block landing-block" id="features">
             <div class="section-head">
                 <p class="section-label">Capabilities</p>
                 <h2>Everything Needed for Daily Academic Delivery</h2>
-                <p class="block-sub">Purpose-built modules keep classroom operations consistent, traceable, and easy to manage.</p>
+                <p class="block-sub">Purpose-built modules keep classroom operations consistent, traceable, and easy to
+                    manage.</p>
             </div>
             <div class="feature-grid">
                 <article class="landing-feature-card">
@@ -105,7 +108,8 @@ require_once __DIR__ . '/includes/config.php';
             <div class="section-head">
                 <p class="section-label">Workflow</p>
                 <h2>A Simple End-to-End Academic Cycle</h2>
-                <p class="block-sub">Each role sees only the actions they need, making daily execution faster and cleaner.</p>
+                <p class="block-sub">Each role sees only the actions they need, making daily execution faster and
+                    cleaner.</p>
             </div>
             <ol class="lp-workflow">
                 <li>
@@ -131,10 +135,11 @@ require_once __DIR__ . '/includes/config.php';
             <div class="section-head">
                 <p class="section-label">Role Coverage</p>
                 <h2>Focused Dashboards for Every User Type</h2>
-                <p class="block-sub">Clear responsibilities reduce confusion and improve accountability across departments.</p>
+                <p class="block-sub">Clear responsibilities reduce confusion and improve accountability across
+                    departments.</p>
             </div>
             <div class="role-grid">
-                <arti   `cle class="role-card role-admin">
+                <arti `cle class="role-card role-admin">
                     <h3>Admin</h3>
                     <p class="role-tagline">Control structure, users, and reporting standards.</p>
                     <ul class="role-list">
@@ -142,25 +147,25 @@ require_once __DIR__ . '/includes/config.php';
                         <li>Monitor participation and submission health</li>
                         <li>Review weekly academic trends</li>
                     </ul>
-                </article>
-                <article class="role-card role-teacher">
-                    <h3>Teacher</h3>
-                    <p class="role-tagline">Deliver classwork and evaluate progress efficiently.</p>
-                    <ul class="role-list">
-                        <li>Publish assignments with strict deadlines</li>
-                        <li>Track attendance and submission quality</li>
-                        <li>Provide feedback and maintain continuity</li>
-                    </ul>
-                </article>
-                <article class="role-card role-student">
-                    <h3>Student</h3>
-                    <p class="role-tagline">Stay organized with clear tasks and timelines.</p>
-                    <ul class="role-list">
-                        <li>View assigned classwork by section</li>
-                        <li>Submit text or PDF work on time</li>
-                        <li>Track attendance and completion status</li>
-                    </ul>
-                </article>
+                    </article>
+                    <article class="role-card role-teacher">
+                        <h3>Teacher</h3>
+                        <p class="role-tagline">Deliver classwork and evaluate progress efficiently.</p>
+                        <ul class="role-list">
+                            <li>Publish assignments with strict deadlines</li>
+                            <li>Track attendance and submission quality</li>
+                            <li>Provide feedback and maintain continuity</li>
+                        </ul>
+                    </article>
+                    <article class="role-card role-student">
+                        <h3>Student</h3>
+                        <p class="role-tagline">Stay organized with clear tasks and timelines.</p>
+                        <ul class="role-list">
+                            <li>View assigned classwork by section</li>
+                            <li>Submit text or PDF work on time</li>
+                            <li>Track attendance and completion status</li>
+                        </ul>
+                    </article>
             </div>
         </div>
 
@@ -169,16 +174,18 @@ require_once __DIR__ . '/includes/config.php';
                 <div>
                     <p class="section-label">Why ClassSync</p>
                     <h2>Built for Consistency, Transparency, and Speed</h2>
-                    <p class="block-sub">ClassSync streamlines routine coordination, reduces manual errors, and helps teams focus on teaching outcomes.</p>
+                    <p class="block-sub">ClassSync streamlines routine coordination, reduces manual errors, and helps
+                        teams focus on teaching outcomes.</p>
                 </div>
                 <a class="btn primary" href="<?php echo BASE_URL; ?>/admin/login.php">Open Admin Portal</a>
             </div>
         </div>
-    </section> -->
+    </section>
 
     <footer class="footer landing-footer">
         <p>© 2026 ClassSync | Daily College Class Work Report Book System .<br>
-     Crafted with ❤️ by Akash Verma</p>
+            Crafted with ❤️ by Akash Verma</p>
     </footer>
 </body>
+
 </html>

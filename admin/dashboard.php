@@ -65,7 +65,8 @@ render_header('Admin Dashboard', 'admin', '/admin/dashboard.php');
     <div>
         <p class="admin-hero-tag">Control Center</p>
         <h2>Welcome, <?php echo e(current_user()['name'] ?? 'Admin'); ?></h2>
-        <p class="admin-hero-text">Monitor the platform, keep user records updated, and use a strict predefined academic structure across all mappings.</p>
+        <p class="admin-hero-text">Monitor the platform, keep user records updated, and use a strict predefined academic
+            structure across all mappings.</p>
     </div>
     <div class="admin-hero-meta">
         <div class="admin-hero-meta-label">Today</div>
@@ -80,7 +81,7 @@ render_header('Admin Dashboard', 'admin', '/admin/dashboard.php');
         <div class="sub">Teachers + Students + Admin</div>
     </div>
     <div class="stat-card">7
-        
+
         <div class="label">Teachers</div>
         <div class="value"><?php echo $totalTeachers; ?></div>
         <div class="sub">Registered faculty members</div>
@@ -138,27 +139,31 @@ render_header('Admin Dashboard', 'admin', '/admin/dashboard.php');
             <h3>View Subjects</h3>
             <p>Review predefined subjects and class coverage.</p>
         </a>
-        <!-- <a class="action-card" href="<?php echo BASE_URL; ?>/admin/reports.php">
+        <a class="action-card" href="<?php echo BASE_URL; ?>/admin/reports.php">
             <h3>Reports</h3>
             <p>Review generated weekly performance reports.</p>
-        </a> -->
+        </a>
     </div>
 </section>
 
 <section class="admin-columns">
     <article class="panel">
         <h2>Setup Status</h2>
-        <div class="setup-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<?php echo $setupPercent; ?>">
+        <div class="setup-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+            aria-valuenow="<?php echo $setupPercent; ?>">
             <span style="width: <?php echo $setupPercent; ?>%;"></span>
         </div>
-        <p class="setup-text"><?php echo $setupPercent; ?>% complete (<?php echo $setupCompleted; ?>/<?php echo $setupSteps; ?> integrity checks passed)</p>
+        <p class="setup-text"><?php echo $setupPercent; ?>% complete
+            (<?php echo $setupCompleted; ?>/<?php echo $setupSteps; ?> integrity checks passed)</p>
         <div class="setup-grid">
             <div class="mini-stat"><span>Courses</span><strong><?php echo $totalCourses; ?></strong></div>
             <div class="mini-stat"><span>Years</span><strong><?php echo $totalYears; ?></strong></div>
             <div class="mini-stat"><span>Sections</span><strong><?php echo $totalSections; ?></strong></div>
             <div class="mini-stat"><span>Subjects</span><strong><?php echo $totalSubjects; ?></strong></div>
-            <div class="mini-stat"><span>Teacher Assignments</span><strong><?php echo $totalTeacherAssignments; ?></strong></div>
-            <div class="mini-stat"><span>Student Assignments</span><strong><?php echo $totalStudentAssignments; ?></strong></div>
+            <div class="mini-stat"><span>Teacher
+                    Assignments</span><strong><?php echo $totalTeacherAssignments; ?></strong></div>
+            <div class="mini-stat"><span>Student
+                    Assignments</span><strong><?php echo $totalStudentAssignments; ?></strong></div>
             <div class="mini-stat"><span>Default Admin Password</span><strong>classsync@121</strong></div>
         </div>
     </article>
@@ -166,14 +171,20 @@ render_header('Admin Dashboard', 'admin', '/admin/dashboard.php');
     <article class="panel">
         <h2>Admin Checklist</h2>
         <ul class="admin-checklist">
-            <li class="<?php echo $totalCourses === count(academic_courses()) ? 'done' : ''; ?>">Courses fixed to BCA, MCA, BTech, MTech</li>
-            <li class="<?php echo $totalYears === count(academic_years()) ? 'done' : ''; ?>">Years fixed to 1st, 2nd, 3rd, 4th</li>
-            <li class="<?php echo $totalSections === count(academic_sections()) ? 'done' : ''; ?>">Sections fixed to A, B, C</li>
-            <li class="<?php echo $totalSubjects === count(academic_subjects()) ? 'done' : ''; ?>">Subjects fixed to 6-system list</li>
+            <li class="<?php echo $totalCourses === count(academic_courses()) ? 'done' : ''; ?>">Courses fixed to BCA,
+                MCA, BTech, MTech</li>
+            <li class="<?php echo $totalYears === count(academic_years()) ? 'done' : ''; ?>">Years fixed to 1st, 2nd,
+                3rd, 4th</li>
+            <li class="<?php echo $totalSections === count(academic_sections()) ? 'done' : ''; ?>">Sections fixed to A,
+                B, C</li>
+            <li class="<?php echo $totalSubjects === count(academic_subjects()) ? 'done' : ''; ?>">Subjects fixed to
+                6-system list</li>
             <li class="<?php echo $totalTeachers > 0 ? 'done' : ''; ?>">Add teacher accounts</li>
             <li class="<?php echo $totalStudents > 0 ? 'done' : ''; ?>">Add student accounts</li>
-            <li class="<?php echo $totalTeacherAssignments > 0 ? 'done' : ''; ?>">Map 5 subjects per class to teachers</li>
-            <li class="<?php echo $totalStudentAssignments > 0 ? 'done' : ''; ?>">Map students to course-year-section</li>
+            <li class="<?php echo $totalTeacherAssignments > 0 ? 'done' : ''; ?>">Map 5 subjects per class to teachers
+            </li>
+            <li class="<?php echo $totalStudentAssignments > 0 ? 'done' : ''; ?>">Map students to course-year-section
+            </li>
             <li class="<?php echo $totalReports > 0 ? 'done' : ''; ?>">Verify report generation flow</li>
         </ul>
     </article>

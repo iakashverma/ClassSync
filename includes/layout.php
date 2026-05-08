@@ -10,8 +10,8 @@ function app_links_by_role(string $role): array
             ['Dashboard', '/admin/dashboard.php'],
             ['Add Teacher', '/admin/add_teacher.php'],
             ['Add Student', '/admin/add_student.php'],
-            ['View Records', '/admin/view_records.php'],
-            ['Reports', '/admin/reports.php'],
+            // ['View Records', '/admin/view_records.php'],
+            // ['Reports', '/admin/reports.php'],
             ['Logout', '/admin/logout.php'],
         ];
     }
@@ -20,10 +20,10 @@ function app_links_by_role(string $role): array
         return [
             ['Dashboard', '/teacher/dashboard.php'],
             ['Create Classwork', '/teacher/classwork_create.php'],
-            ['Attendance', '/teacher/attendance.php'],
+            // ['Attendance', '/teacher/attendance.php'],
             ['Submissions', '/teacher/submissions.php'],
-            ['Feedback', '/teacher/feedback.php'],
-            ['Weekly Reports', '/teacher/reports.php'],
+            // ['Feedback', '/teacher/feedback.php'],
+            // ['Weekly Reports', '/teacher/reports.php'],
             ['Logout', '/teacher/logout.php'],
         ];
     }
@@ -32,7 +32,7 @@ function app_links_by_role(string $role): array
         ['Dashboard', '/student/dashboard.php'],
         ['Classwork', '/student/classwork.php'],
         ['Submit Work', '/student/submit.php'],
-        ['Weekly Reports', '/student/report.php'],
+        // ['Weekly Reports', '/student/report.php'],
         ['Logout', '/student/logout.php'],
     ];
 }

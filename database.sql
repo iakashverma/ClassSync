@@ -202,17 +202,14 @@ WHERE role = 'admin'
 
 -- Teacher login.....
 
--- Teacher ID: 3217, 
--- Email: kunal3217@classsync.com, 
--- MCA	1st Year	A	Java
-
+-- Teacher ID: 3121
+-- Email: deep3121@classsync.com
 
 
 -- Student login.....
 
--- Student ID: 980638, 
--- Email: dhiraj980638@classsync.com, 
--- MCA	1st Year	A
+-- Student ID: 194456
+-- Email: akash194456@classsync.com
 
 
 -- Default password for all user: classsync@121
